@@ -15,4 +15,9 @@ A **CakeMaker** describes baking a cake by following these steps: A cake is made
 * The ingredients must be combined before the cake can be baked.
 * The cake must be finished baking before the cake can be frosted.
 
+Some synhronization between threads added:
+
+* Check the condition on which to wait.
+* Decide whether to wait() (block the execution of the current thread) or notifyAll() (allow other threads to check their condition again and proceed).
+
 These exercises are from the **CodeAcademy**.
