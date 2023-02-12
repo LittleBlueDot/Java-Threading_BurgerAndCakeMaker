@@ -8,9 +8,16 @@ public class CakeMaker {
     public void preheatOven() {
         try {
             printTask("Oven pre-heating...");
-            ovenInUse = true;
+            synchronized (this){
+                printTask("Oven is in use!");
+                ovenInUse = true;
+            }
             Thread.sleep(10000);
-            ovenInUse = false;
+            synchronized(this) {
+                ovenInUse = false;
+                printTask("Releasing oven!");
+                notifyAll();
+            }
             printTask("Done!");
         } catch (InterruptedException e) {
             System.out.println(e);
@@ -20,7 +27,14 @@ public class CakeMaker {
     public void mixDryIngredients() {
         try {
             printTask("Mixing dry ingredients...");
-            mixingBowlInUse = true;
+            synchronized(this) {
+                while(mixingBowlInUse){
+                    printTask("Waiting for the mixing bowl...");
+                    wait();
+                }
+                printTask("Using the mixing bowl!");
+                mixingBowlInUse = true;
+            }
             Thread.sleep(200);
             printTask("Adding cake flour");
             Thread.sleep(200);
@@ -33,8 +47,11 @@ public class CakeMaker {
             whiskInUse = true;
             printTask("Mixing...");
             Thread.sleep(200);
-            whiskInUse = false;
-            mixingBowlInUse = false;
+            synchronized(this) {
+                mixingBowlInUse = false;
+                printTask("Releasing the mixing bowl!");
+                notifyAll();
+            }
             printTask("Done!");
         } catch (InterruptedException e) {
             System.out.println(e);
@@ -44,7 +61,14 @@ public class CakeMaker {
     public void mixWetIngredients() {
         try {
             printTask("Mixing wet ingredients...");
-            mixingBowlInUse = true;
+            synchronized(this) {
+                while(mixingBowlInUse){
+                    printTask("Waiting for the mixing bowl...");
+                    wait();
+                }
+                printTask("Using the mixing bowl!");
+                mixingBowlInUse = true;
+            }
             Thread.sleep(1000);
             printTask("Adding butter...");
             Thread.sleep(500);
@@ -54,11 +78,26 @@ public class CakeMaker {
             Thread.sleep(500);
             printTask("Adding buttermilk...");
             Thread.sleep(500);
-            whiskInUse = true;
+            synchronized(this) {
+                while(whiskInUse){
+                    printTask("Waiting for the whisk...");
+                    wait();
+                }
+                printTask("Using the whisk!");
+                whiskInUse = true;
+            }
             printTask("Mixing...");
             Thread.sleep(1500);
-            whiskInUse = false;
-            mixingBowlInUse = false;
+            synchronized(this) {
+                whiskInUse = false;
+                printTask("Releasing the whisk!");
+                notifyAll();
+            }
+            synchronized(this) {
+                mixingBowlInUse = false;
+                printTask("Releasing the mixing bowl!");
+                notifyAll();
+            }
             printTask("Done!");
         } catch (InterruptedException e) {
             System.out.println(e);
@@ -68,15 +107,37 @@ public class CakeMaker {
     public void combineIngredients() {
         try {
             printTask("Combining ingredients...");
-            mixingBowlInUse = true;
+            synchronized(this) {
+                while(mixingBowlInUse){
+                    printTask("Waiting for the mixing bowl...");
+                    wait();
+                }
+                printTask("Using the mixing bowl!");
+                mixingBowlInUse = true;
+            }
             Thread.sleep(1000);
             printTask("Adding dry mix to wet mix...");
             Thread.sleep(1500);
-            whiskInUse = true;
+            synchronized (this){
+                while (whiskInUse){
+                    printTask("Waiting for the whisk...");
+                    wait();
+                }
+                printTask("Using the whisk");
+                whiskInUse = true;
+            }
             printTask("Mixing...");
             Thread.sleep(1500);
-            whiskInUse = false;
-            mixingBowlInUse = false;
+            synchronized(this) {
+                whiskInUse = false;
+                printTask("Releasing the whisk!");
+                notifyAll();
+            }
+            synchronized(this) {
+                mixingBowlInUse = false;
+                printTask("Releasing the mixing bowl!");
+                notifyAll();
+            }
             printTask("Done!");
         } catch (InterruptedException e) {
             System.out.println(e);
@@ -86,9 +147,20 @@ public class CakeMaker {
     public void bakeCake() {
         try {
             printTask("Baking cake...");
-            ovenInUse = true;
+            synchronized (this){
+                while (ovenInUse){
+                    printTask("Waiting for oven to be pre-heated...");
+                    wait();
+                }
+                printTask("Oven is in use!");
+                ovenInUse = true;
+            }
             Thread.sleep(10000);
-            ovenInUse = false;
+            synchronized(this) {
+                ovenInUse = false;
+                printTask("Releasing oven!");
+                notifyAll();
+            }
             printTask("Done!");
         } catch (InterruptedException e) {
             System.out.println(e);
@@ -98,8 +170,22 @@ public class CakeMaker {
     public void makeFrosting() {
         try {
             printTask("Making frosting...");
-            whiskInUse = true;
-            mixingBowlInUse = true;
+            synchronized(this) {
+                while(whiskInUse){
+                    printTask("Waiting for the whisk...");
+                    wait();
+                }
+                printTask("Using the whisk!");
+                whiskInUse = true;
+            }
+            synchronized(this) {
+                while(mixingBowlInUse){
+                    printTask("Waiting for the mixing bowl...");
+                    wait();
+                }
+                printTask("Using the mixing bowl!");
+                mixingBowlInUse = true;
+            }
             printTask("Adding butter...");
             Thread.sleep(200);
             printTask("Adding milk...");
@@ -110,8 +196,16 @@ public class CakeMaker {
             Thread.sleep(200);
             printTask("Adding salt...");
             Thread.sleep(200);
-            whiskInUse = false;
-            mixingBowlInUse = false;
+            synchronized(this) {
+                whiskInUse = false;
+                printTask("Releasing the whisk!");
+                notifyAll();
+            }
+            synchronized(this) {
+                mixingBowlInUse = false;
+                printTask("Releasing the mixing bowl!");
+                notifyAll();
+            }
             printTask("Done!");
 
         } catch (InterruptedException e) {
