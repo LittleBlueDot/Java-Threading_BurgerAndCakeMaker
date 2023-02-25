@@ -20,4 +20,4 @@ Some synhronization between threads added:
 * Check the condition on which to wait.
 * Decide whether to wait() (block the execution of the current thread) or notifyAll() (allow other threads to check their condition again and proceed).
 
-These exercises are from the **CodeAcademy**.
+These exercises are from the **Codecademy**.
